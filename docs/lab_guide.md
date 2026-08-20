@@ -114,4 +114,20 @@ Cách khắc phục (chọn 1 trong 3):
 Mỗi nhóm trả lời 2 câu:
 
 1. Case nào nên dùng multi-agent? Vì sao?
+
+   Khi task có nhiều bước xử lý khác bản chất nhau (tìm nguồn → phân tích bằng chứng → viết
+   câu trả lời có trích dẫn) và cần kiểm soát chất lượng từng bước độc lập — tách vai trò cho
+   phép trace "ai làm gì, tốn bao nhiêu", retry/fallback riêng từng bước khi fail, và thêm bước
+   phản biện (Critic) kiểm tra citation coverage trước khi trả kết quả. Trong benchmark thực đo
+   ở `reports/benchmark_report.md`, bản multi-agent đạt quality score và citation coverage cao
+   hơn baseline (20% citation coverage so với 0% ở baseline single-call) nhờ có bước Researcher
+   tách riêng và Critic kiểm tra lại. Phù hợp với các task cần độ tin cậy cao và có thể audit
+   được: báo cáo nghiên cứu, tài liệu kỹ thuật, nội dung cần fact-checking.
+
 2. Case nào không nên dùng multi-agent? Vì sao?
+
+   Khi câu hỏi đơn giản, một lượt là đủ (trả lời FAQ, dịch một câu, tóm tắt ngắn) hoặc khi
+   latency là ưu tiên số một (chat trực tiếp cần phản hồi tức thì). Multi-agent gọi LLM nhiều
+   lần tuần tự (researcher → analyst → writer → critic) nên tốn nhiều thời gian và chi phí hơn
+   hẳn so với 1 lần gọi của baseline, mà với câu hỏi đơn giản thì mức tăng chất lượng đó không
+   bù lại được chi phí latency/cost phát sinh — baseline một lượt là lựa chọn hợp lý hơn.

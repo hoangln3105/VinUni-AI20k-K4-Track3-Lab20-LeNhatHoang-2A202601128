@@ -20,6 +20,7 @@ class ResearchState(BaseModel):
     sources: list[SourceDocument] = Field(default_factory=list)
     research_notes: str | None = None
     analysis_notes: str | None = None
+    critic_notes: str | None = None
     final_answer: str | None = None
 
     agent_results: list[AgentResult] = Field(default_factory=list)
