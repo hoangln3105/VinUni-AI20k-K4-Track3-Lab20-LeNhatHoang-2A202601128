@@ -28,6 +28,24 @@ _BASELINE_SYSTEM_PROMPT = (
     "answer to the user's query in one pass, citing sources inline as [n] when known."
 )
 
+_FAILURE_MODE_NOTES = (
+    "**Failure mode:** `LLMClient`/`SearchClient` read provider keys via a module-level "
+    "`get_settings()` that loads `.env`. The offline-mock unit tests originally relied on "
+    "`.env` simply not having a key. Once a real `OPENAI_API_KEY` was added for local runs, "
+    "those tests silently started hitting the live OpenAI API instead of the mock path — "
+    "non-deterministic content, real cost, and a hard dependency on network access, with no "
+    "test failure signal until an assertion on `cost_usd == 0.0` broke.\n\n"
+    "**Fix:** added an optional `settings: Settings | None` constructor parameter to "
+    "`LLMClient`/`SearchClient` so tests can inject a keyless `Settings` explicitly instead of "
+    "depending on ambient environment state (`tests/test_llm_client.py`, "
+    "`tests/test_search_client.py`). For the full-graph test, where agents construct their own "
+    "clients internally, `tests/test_workflow.py` uses `monkeypatch.setenv(...)` plus "
+    "`get_settings.cache_clear()` to force offline mode for the duration of that test "
+    "regardless of the developer's local `.env`. Same guardrail principle as the retry/fallback "
+    "logic in `graph/workflow.py`: never let external, ambient state make a run "
+    "non-reproducible."
+)
+
 
 def _init() -> None:
     settings = get_settings()
@@ -136,7 +154,7 @@ def benchmark(
         )
         metrics.append(multi_metrics)
 
-    report = render_markdown_report(metrics)
+    report = render_markdown_report(metrics, failure_mode_notes=_FAILURE_MODE_NOTES)
     path = LocalArtifactStore().write_text(output, report)
     console.print(Panel.fit(f"Report written to {path}", title="Benchmark"))
     console.print(report)

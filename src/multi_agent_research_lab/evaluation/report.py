@@ -3,7 +3,9 @@
 from multi_agent_research_lab.core.schemas import BenchmarkMetrics
 
 
-def render_markdown_report(metrics: list[BenchmarkMetrics]) -> str:
+def render_markdown_report(
+    metrics: list[BenchmarkMetrics], failure_mode_notes: str | None = None
+) -> str:
     """Render benchmark metrics to markdown, with a short comparison summary up top."""
 
     lines = ["# Benchmark Report", ""]
@@ -39,4 +41,8 @@ def render_markdown_report(metrics: list[BenchmarkMetrics]) -> str:
             f"| {item.run_name} | {item.latency_seconds:.2f} | {cost} | {quality} "
             f"| {citation} | {failure} | {item.notes} |"
         )
+
+    if failure_mode_notes:
+        lines += ["", "## Failure mode encountered & fix", "", failure_mode_notes]
+
     return "\n".join(lines) + "\n"
