@@ -119,9 +119,10 @@ Mỗi nhóm trả lời 2 câu:
    câu trả lời có trích dẫn) và cần kiểm soát chất lượng từng bước độc lập — tách vai trò cho
    phép trace "ai làm gì, tốn bao nhiêu", retry/fallback riêng từng bước khi fail, và thêm bước
    phản biện (Critic) kiểm tra citation coverage trước khi trả kết quả. Trong benchmark thực đo
-   ở `reports/benchmark_report.md`, bản multi-agent đạt quality score và citation coverage cao
-   hơn baseline (20% citation coverage so với 0% ở baseline single-call) nhờ có bước Researcher
-   tách riêng và Critic kiểm tra lại. Phù hợp với các task cần độ tin cậy cao và có thể audit
+   ở `reports/benchmark_report.md` (chạy với API key thật), bản multi-agent đạt quality
+   score 9.6-10.0/10 và citation coverage 100% so với baseline chỉ đạt 7.0/10 và không trích
+   dẫn nguồn nào, nhờ có bước Researcher tách riêng và Critic kiểm tra lại. Phù hợp với các
+   task cần độ tin cậy cao và có thể audit
    được: báo cáo nghiên cứu, tài liệu kỹ thuật, nội dung cần fact-checking.
 
 2. Case nào không nên dùng multi-agent? Vì sao?
